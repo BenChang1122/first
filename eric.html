@@ -9,32 +9,30 @@
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
             background-color: #1a1a1a;
             color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
         }
-        .game-container {
-            background: #2c3e50;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            max-width: 600px;
-            width: 90%;
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
             text-align: center;
+        }
+        .game-card {
+            background: #2c3e50;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         h2 { color: #3498db; }
         .lyric-box {
-            font-size: 1.4em;
-            margin: 30px 0;
-            line-height: 1.8;
-            letter-spacing: 2px;
+            font-size: 1.2em;
+            margin: 20px 0;
         }
         input {
             font-size: 1em;
             padding: 5px;
-            width: 60px;
+            width: 80px;
             text-align: center;
             border: none;
             border-bottom: 2px solid #3498db;
@@ -46,136 +44,110 @@
             background-color: #3498db;
             color: white;
             border: none;
-            padding: 10px 25px;
-            font-size: 1em;
+            padding: 8px 20px;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 20px;
+            margin: 10px;
         }
-        button:hover { background-color: #2980b9; }
-        #message {
+        .video-container {
             margin-top: 20px;
+            display: none; /* 預設隱藏影片 */
+        }
+        .message {
+            margin-top: 10px;
             font-weight: bold;
-            height: 24px;
         }
-        .hidden { display: none; }
-        #player { margin-top: 20px; border-radius: 10px; overflow: hidden; }
     </style>
 </head>
 <body>
 
-<div class="game-container">
-    <a href="index.html" style="color: #bdc3c7; text-decoration: none; font-size: 0.9em;">← 回到首頁</a>
-    <h2>周興哲歌詞大挑戰</h2>
-    <p>請填入空格中的歌詞：</p>
+<div class="container">
+    <a href="index.html" style="color: #bdc3c7; text-decoration: none;">← 回到首頁</a>
+    <h1>周興哲歌詞填空挑戰</h1>
+    <p>填入正確歌詞，解鎖音樂影片！</p>
 
-    <div id="game-content">
-        <div class="lyric-box" id="lyric-display">
-            </div>
-        
-        <div id="input-area">
-            <input type="text" id="answer-input" maxlength="2" placeholder="??">
-            <br>
-            <button onclick="checkAnswer()">提交答案代</button>
+    <div class="game-card" id="game-1">
+        <h2>《以後別做朋友》</h2>
+        <div class="lyric-box">
+            以後別做朋友，朋友不能 <input type="text" id="input-1" placeholder="??">
         </div>
+        <button onclick="checkAnswer(1)">提交答案</button>
+        <div class="message" id="msg-1"></div>
+        <div class="video-container" id="video-1"></div>
+    </div>
 
-        <div id="result-area" class="hidden">
-            <p id="message"></p>
-            <div id="player"></div> <br>
-            <button onclick="resetGame()">再玩一次</button>
+    <div class="game-card" id="game-2">
+        <h2>《你，好不好？》</h2>
+        <div class="lyric-box">
+            能不能繼續，對我 <input type="text" id="input-2" placeholder="??"> ，不收回
         </div>
+        <button onclick="checkAnswer(2)">提交答案</button>
+        <div class="message" id="msg-2"></div>
+        <div class="video-container" id="video-2"></div>
+    </div>
+
+    <div class="game-card" id="game-3">
+        <h2>《如果雨之後》</h2>
+        <div class="lyric-box">
+            如果雨之後，淚還不停 <input type="text" id="input-3" placeholder="??">
+        </div>
+        <button onclick="checkAnswer(3)">提交答案</button>
+        <div class="message" id="msg-3"></div>
+        <div class="video-container" id="video-3"></div>
+    </div>
+
+    <div class="game-card" id="game-4">
+        <h2>《你不屬於我》</h2>
+        <div class="lyric-box">
+            你不屬於我，屬於我的 <input type="text" id="input-4" placeholder="??">
+        </div>
+        <button onclick="checkAnswer(4)">提交答案</button>
+        <div class="message" id="msg-4"></div>
+        <div class="video-container" id="video-4"></div>
     </div>
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
-
 <script>
-    const songData = [
-        {
-            title: "你不屬於我",
-            id: "6O_Zx9St9ik",
-            lyricPre: "你不屬於我，屬於我的",
-            lyricPost: "",
-            answer: "脆弱",
-            startTime: 77 // [00:01:17]
-        },
-        {
-            title: "你，好不好？",
-            id: "wSBXfzgqHtE",
-            lyricPre: "能不能繼續，對我",
-            lyricPost: "，",
-            answer: "哭",
-            startTime: 73 // [00:01:13]
-        },
-        {
-            title: "如果雨之後",
-            id: "gdGdO6KjF1I",
-            lyricPre: "如果雨之後，淚還不停",
-            lyricPost: "",
-            answer: "流",
-            startTime: 58 // [00:00:58]
-        },
-        {
-            title: "以後別做朋友",
-            id: "Ew4VvF0DPMc",
-            lyricPre: "以後別做朋友，朋友不能",
-            lyricPost: "",
-            answer: "牽手",
-            startTime: 74 // [00:01:14]
-        }
-    ];
+    const songData = {
+        1: { id: "Ew4VvF0DPMc", answer: "牽手", startTime: 74 },
+        2: { id: "wSBXfzgqHtE", answer: "任性", startTime: 73 },
+        3: { id: "gdGdO6KjF1I", answer: "流下", startTime: 58 },
+        4: { id: "6O_Zx9St9ik", answer: "脆弱", startTime: 77 }
+    };
 
-    let currentSong;
-    let player;
+    let players = {};
 
-    function onYouTubeIframeAPIReady() {
-        resetGame();
-    }
+    function checkAnswer(num) {
+        const userInput = document.getElementById('input-' + num).value.trim();
+        const msg = document.getElementById('msg-' + num);
+        const videoDiv = document.getElementById('video-' + num);
+        const data = songData[num];
 
-    function resetGame() {
-        // 隨機選一首歌
-        currentSong = songData[Math.floor(Math.random() * songData.length)];
-        
-        // 重設介面
-        document.getElementById('lyric-display').innerHTML = `${currentSong.lyricPre} <input type="text" id="answer-input" maxlength="2"> ${currentSong.lyricPost}`;
-        document.getElementById('input-area').classList.remove('hidden');
-        document.getElementById('result-area').classList.add('hidden');
-        document.getElementById('message').innerText = "";
-        if (player) {
-            player.stopVideo();
-            document.getElementById('player').innerHTML = "";
-        }
-    }
-
-    function checkAnswer() {
-        const userAnswer = document.getElementById('answer-input').value.trim();
-        const messageBox = document.getElementById('message');
-        
-        if (userAnswer === currentSong.answer) {
-            messageBox.style.color = "#2ecc71";
-            messageBox.innerText = "太棒了！填寫正確！";
-            document.getElementById('input-area').classList.add('hidden');
-            document.getElementById('result-area').classList.remove('hidden');
-            playMusic();
-        } else {
-            messageBox.style.color = "#e74c3c";
-            messageBox.innerText = "填寫錯誤，再試一次吧！";
-            document.getElementById('input-area').classList.add('hidden');
-            document.getElementById('result-area').classList.remove('hidden');
-        }
-    }
-
-    function playMusic() {
-        player = new YT.Player('player', {
-            height: '200',
-            width: '100%',
-            videoId: currentSong.id,
-            playerVars: {
-                'start': currentSong.startTime,
-                'autoplay': 1,
-                'controls': 0
+        if (userInput === data.answer) {
+            msg.style.color = "#2ecc71";
+            msg.innerText = "正確！正在播放音樂...";
+            videoDiv.style.display = "block";
+            
+            // 建立該歌曲的播放器
+            if (!players[num]) {
+                players[num] = new YT.Player('video-' + num, {
+                    height: '240',
+                    width: '100%',
+                    videoId: data.id,
+                    playerVars: { 'start': data.startTime, 'autoplay': 1 }
+                });
+            } else {
+                players[num].seekTo(data.startTime);
+                players[num].playVideo();
             }
-        });
+        } else {
+            msg.style.color = "#e74c3c";
+            msg.innerText = "填寫錯誤，再試一次！";
+            // 答錯時隱藏影片並停止
+            videoDiv.style.display = "none";
+            if (players[num]) players[num].stopVideo();
+        }
     }
 </script>
 

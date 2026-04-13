@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>周興哲音樂挑戰 - 歌詞填空</title>
+    <style>
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background-color: #1a1a1a;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .game-container {
+            background: #2c3e50;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+        h2 { color: #3498db; }
+        .lyric-box {
+            font-size: 1.4em;
+            margin: 30px 0;
+            line-height: 1.8;
+            letter-spacing: 2px;
+        }
+        input {
+            font-size: 1em;
+            padding: 5px;
+            width: 60px;
+            text-align: center;
+            border: none;
+            border-bottom: 2px solid #3498db;
+            background: transparent;
+            color: #f1c40f;
+            outline: none;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover { background-color: #2980b9; }
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+            height: 24px;
+        }
+        .hidden { display: none; }
+        #player { margin-top: 20px; border-radius: 10px; overflow: hidden; }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <a href="index.html" style="color: #bdc3c7; text-decoration: none; font-size: 0.9em;">← 回到首頁</a>
+    <h2>周興哲歌詞大挑戰</h2>
+    <p>請填入空格中的歌詞：</p>
+
+    <div id="game-content">
+        <div class="lyric-box" id="lyric-display">
+            </div>
+        
+        <div id="input-area">
+            <input type="text" id="answer-input" maxlength="2" placeholder="??">
+            <br>
+            <button onclick="checkAnswer()">提交答案代</button>
+        </div>
+
+        <div id="result-area" class="hidden">
+            <p id="message"></p>
+            <div id="player"></div> <br>
+            <button onclick="resetGame()">再玩一次</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<script>
+    const songData = [
+        {
+            title: "你不屬於我",
+            id: "6O_Zx9St9ik",
+            lyricPre: "你不屬於我，屬於我的",
+            lyricPost: "",
+            answer: "脆弱",
+            startTime: 77 // [00:01:17]
+        },
+        {
+            title: "你，好不好？",
+            id: "wSBXfzgqHtE",
+            lyricPre: "能不能繼續，對我",
+            lyricPost: "，不收回",
+            answer: "哭",
+            startTime: 73 // [00:01:13]
+        },
+        {
+            title: "如果雨之後",
+            id: "gdGdO6KjF1I",
+            lyricPre: "如果雨之後，淚還不停",
+            lyricPost: "",
+            answer: "流",
+            startTime: 58 // [00:00:58]
+        },
+        {
+            title: "以後別做朋友",
+            id: "Ew4VvF0DPMc",
+            lyricPre: "以後別做朋友，朋友不能",
+            lyricPost: "",
+            answer: "牽手",
+            startTime: 74 // [00:01:14]
+        }
+    ];
+
+    let currentSong;
+    let player;
+
+    function onYouTubeIframeAPIReady() {
+        resetGame();
+    }
+
+    function resetGame() {
+        // 隨機選一首歌
+        currentSong = songData[Math.floor(Math.random() * songData.length)];
+        
+        // 重設介面
+        document.getElementById('lyric-display').innerHTML = `${currentSong.lyricPre} <input type="text" id="answer-input" maxlength="2"> ${currentSong.lyricPost}`;
+        document.getElementById('input-area').classList.remove('hidden');
+        document.getElementById('result-area').classList.add('hidden');
+        document.getElementById('message').innerText = "";
+        if (player) {
+            player.stopVideo();
+            document.getElementById('player').innerHTML = "";
+        }
+    }
+
+    function checkAnswer() {
+        const userAnswer = document.getElementById('answer-input').value.trim();
+        const messageBox = document.getElementById('message');
+        
+        if (userAnswer === currentSong.answer) {
+            messageBox.style.color = "#2ecc71";
+            messageBox.innerText = "太棒了！填寫正確！";
+            document.getElementById('input-area').classList.add('hidden');
+            document.getElementById('result-area').classList.remove('hidden');
+            playMusic();
+        } else {
+            messageBox.style.color = "#e74c3c";
+            messageBox.innerText = "填寫錯誤，再試一次吧！";
+            document.getElementById('input-area').classList.add('hidden');
+            document.getElementById('result-area').classList.remove('hidden');
+        }
+    }
+
+    function playMusic() {
+        player = new YT.Player('player', {
+            height: '200',
+            width: '100%',
+            videoId: currentSong.id,
+            playerVars: {
+                'start': currentSong.startTime,
+                'autoplay': 1,
+                'controls': 0
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
